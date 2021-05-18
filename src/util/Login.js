@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { connect } from "react-redux";
 import { login } from '../fllux/actions/authActions';
+import { loadQuestion } from '../fllux/actions/resetActions';
 
 import './style.css';
 
-const Login = ({auth, user, history, login, errorMsg}) => {
+const Login = ({auth, user, history, login, errorMsg, loadQuestion}) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [keepConnection, setKeepConnection] = useState(false);
@@ -22,10 +23,19 @@ const Login = ({auth, user, history, login, errorMsg}) => {
         }        
     };
 
+    const handleResetPassword = () => {
+        if (!validateEmail(email)) alert('Provide the email first ');
+        else loadQuestion(email);
+    };
+
     useEffect(() => {
         if (auth && user) history.push("/");
         else if (errorMsg) alert(errorMsg);
     }, [errorMsg, auth, user]);
+
+    const ConditionalLink = ({ children, to, condition, onClick }) => (condition && to)
+      ? <Link to={to} onClick={onClick}>{children}</Link>
+      : <>{children}</>;
 
     return (
         <form className="auth-wrapper auth-inner" onSubmit={onSubmit}>
@@ -60,7 +70,7 @@ const Login = ({auth, user, history, login, errorMsg}) => {
 
             <button type="submit" className="btn btn-primary btn-block">Login</button>
             <p className="forgot-password text-right">
-                Forgot <a href="#">password?</a>
+                Forgot <ConditionalLink to="/resetpassword" condition={validateEmail(email)} onClick={handleResetPassword}>password?</ConditionalLink>
             </p>
             <p className="forgot-password text-right">
                 New here ? <Link to="/register">Sign up</Link>
@@ -68,6 +78,11 @@ const Login = ({auth, user, history, login, errorMsg}) => {
         </form>
     );
 };
+
+function validateEmail(email) {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
 
 const mapStateToProps = (state) => {
     return {
@@ -77,6 +92,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapActionsToProps = { login };
+const mapActionsToProps = { login, loadQuestion };
 
 export default connect(mapStateToProps, mapActionsToProps)(Login);

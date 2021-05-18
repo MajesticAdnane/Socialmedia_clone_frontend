@@ -7,7 +7,7 @@ import {
     LOGIN_SUCCESS,
     LOGIN_FAIL,
     LOAD_USER,
-    LOGOUT_SUCCESS
+    LOGOUT_SUCCESS,
   } from './types';
 
 export const register = (newUser) => dispatch => {
