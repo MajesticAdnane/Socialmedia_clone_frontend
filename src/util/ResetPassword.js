@@ -1,10 +1,10 @@
 import './style.css';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { verifyResponse, changePassword } from '../fllux/actions/resetActions';
+import { verifyResponse, changePassword, clearResetData } from '../fllux/actions/resetActions';
 import { useState, useEffect } from 'react';
 
-const ResetPassword = ({secretQuestion, responseValidated, email, verifyResponse, changePassword, errorMsg}) => {
+const ResetPassword = ({secretQuestion, responseValidated, email, verifyResponse, changePassword, errorMsg, clearResetData}) => {
     const [formData, setformData] = useState('');
 
     const labelText = (responseValidated !== true) ? secretQuestion ?? 'some error' : 'Enter your new password';
@@ -18,7 +18,7 @@ const ResetPassword = ({secretQuestion, responseValidated, email, verifyResponse
     };
 
     useEffect(() => {
-        alert(errorMsg);
+        if (errorMsg) alert(errorMsg);
     }, [errorMsg])
 
     return (
@@ -30,7 +30,7 @@ const ResetPassword = ({secretQuestion, responseValidated, email, verifyResponse
                 /> <br/>
                 <button type="submit" className="btn btn-primary btn-block">Send</button>
 
-                <p className="forgot-password text-right">
+                <p onClick={clearResetData} className="forgot-password text-right">
                     <Link to="/login">Go back </Link>
                 </p>
             </div>
@@ -47,6 +47,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapActionsToProps = { verifyResponse, changePassword };
+const mapActionsToProps = { verifyResponse, changePassword, clearResetData };
 
 export default connect(mapStateToProps, mapActionsToProps)(ResetPassword);

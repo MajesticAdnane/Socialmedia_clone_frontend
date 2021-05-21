@@ -82,3 +82,7 @@ export const changePassword = (email, newPassword) => dispatch => {
             )
         });
 };
+
+export const clearResetData = () => dispatch => {
+    dispatch({type: CLEAR_RESETDATA});
+}
