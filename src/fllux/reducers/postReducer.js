@@ -1,31 +1,20 @@
-import { GET_POSTS, GET_USER_POSTS, ADD_POST, DELETE_POST, ADD_COMMENT, SET_POSTS_USER } from '../actions/types';
+import { GET_POSTS, ADD_POST, DELETE_POST, ADD_COMMENT } from '../actions/types';
 
 const initialState = {
     posts: [],
-    userID: null
 };
 
 export default function(state = initialState, action) {
     switch (action.type) {
-        case SET_POSTS_USER:
-            return {
-                ...state,
-                userID: action.payload.userID
-            };
         case GET_POSTS:
             return {
                 ...state,
-                ...action.payload
-            };
-        case GET_USER_POSTS:
-            return {
-                ...state,
-                posts: state.posts.filter((post) => post.user_id === state.userID)
+                posts: action.payload
             };
         case ADD_POST:
             return {
                 ...state,
-                posts: state.posts.push(action.payload)
+                posts: [...state.posts, action.payload]
             };
         case DELETE_POST:
             return {

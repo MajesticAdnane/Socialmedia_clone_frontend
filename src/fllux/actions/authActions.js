@@ -2,13 +2,9 @@ import axios from 'axios';
 import { returnErrors, clearErrors } from './errorActions';
 import {
     REGISTER_SUCCESS,
-    REGISTER_FAIL,
-    GET_ERRORS,
     LOGIN_SUCCESS,
-    LOGIN_FAIL,
     LOAD_USER,
     LOGOUT_SUCCESS,
-    SET_POSTS_USER
   } from './types';
 
 export const register = (newUser) => dispatch => {
@@ -29,7 +25,6 @@ export const register = (newUser) => dispatch => {
                 type: REGISTER_SUCCESS,
                 payload: res.data
             });
-            dispatch({type: SET_POSTS_USER, payload: {userID: res.data.user.id}});
             dispatch(
                 clearErrors()
             );
@@ -61,7 +56,6 @@ export const login = (userData, keepConnection) => dispatch => {
                     type: LOGIN_SUCCESS,
                     payload: res.data
                 });
-                dispatch({type: SET_POSTS_USER, payload: {userID: res.data.user.id}});
                 dispatch(clearErrors());
         })
         .catch(err => {
@@ -76,19 +70,18 @@ export const loadUser = () => dispatch => {
   
     axios
       .get('/api/auth/user', tokenConfig(localStorage.getItem('token')))
-      .then(res => {
+      .then(res => 
         dispatch({
           type: LOAD_USER,
           payload: res.data
-        });
-        dispatch({type: SET_POSTS_USER, payload: {userID: res.data.user._id}});
-      })
+        })
+      )
       .catch(err => {
         dispatch(returnErrors(err.response.data, err.response.status));
       });
   };
 
-const tokenConfig = (token) => {
+export const tokenConfig = (token) => {
       // Headers
     const config = {
       headers: {
