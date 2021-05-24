@@ -1,44 +1,51 @@
 import { useState } from 'react';
 
-import { Modal, Card } from 'react-bootstrap';
-import PostDetails from './PostDetails';
+import { Modal, Button } from 'react-bootstrap';
 import image from '../logo.svg';
+import { connect } from 'react-redux';
+import { deletePost, addComment } from '../fllux/actions/postActions';
+import PostDetails from './PostDetails';
 
-const Post = () => {
-  const [show, setShow] = useState(false);
-  
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+const Post = ({post, deletePost, addComment, firstName, lastName}) => {
+    const [show, setShow] = useState(false);
+    
     return (
         <>
             <Modal
                 show={show}
-                onHide={handleClose}
+                onHide={() => setShow(false)}
             >
-                <PostDetails/>
+                <PostDetails postID={post._id} comments={post.comments}/>
             </Modal>
 
             <div style={{width: '40%'}}>
                 <img alt="avatar" src={image} style={{width: '60px', height: '60px'}}/>
                 <span style={{}}>
-                    <b style={{}}> UserName </b>
+                    <b style={{}}> {[firstName, lastName].join('  ')} </b>
                     <br/>
-                    <textarea style={{resize: 'none', width: '90%', height: '5em', border: 'none', outline: 'none'}} readOnly> Hunter X Hunter have reached 900 days without a new chapter!
-Hunter X Hunter is on Hiatus since issue 1 (2019) of Weekly Shonen Jump, making this the longest Hiatus streak in manga history.
-Fans aren't sure the comeback will ever happen given Yoshihiro's health. The beloved creator has famously grappled with severe back pain, and Yoshihiro admits the injury is aggravated when drawing. </textarea>
-                </span> <br/>
-                <button>Like</button>
-                <button>Comment</button>
+                    <i>Posted -{post.post_date}</i>
+                    <textarea style={{resize: 'none', width: '80%', height: '5em', border: 'none', outline: 'none'}} readOnly> 
+                        {post.content}
+                    </textarea>
+                    <Button style={{marginTop: '-200px'}} variant="danger" onClick={() => deletePost(post._id)}>Delete</Button> 
+                </span>
+                <br/>
+
+                <Button variant="light">Like</Button>
+                <Button variant="primary" onClick={() => setShow(true)}>Comment</Button>
             </div>
         </>
     );
 };
 
-export default Post;
-/*<Card style={{marginLeft: '30%', marginRight: '35%'}}>
-                <Card.Body>
-                    <Card.Img variant="top" src={image} style={{height: '60px', width: '60px'}}/>
-                    <Card.Title> User </Card.Title>
-                </Card.Body>
-            </Card>*/
+
+const mapStateToProps = (state) => {
+    return {
+        firstName: state.auth.user.firstName,
+        lastName: state.auth.user.lastName
+    };
+};
+
+const mapActionsToProps = { deletePost, addComment };
+
+export default connect(mapStateToProps, mapActionsToProps)(Post);

@@ -1,28 +1,37 @@
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import image from '../logo.svg';
+import { useState } from 'react';
+import { connect } from 'react-redux';
+import { addPost } from '../fllux/actions/postActions';
 
-const PostForm = () => {
+const PostForm = ({addPost}) => {
+    const [post, setPost] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const newPost = {
+            content: post,
+            postDate: Date.now()
+        };
+        addPost(newPost);
+
+        setPost('');
+    };
 
     return (
         <div style={{marginTop: '2%', marginLeft: '25%'}}>
             <img src={image} alt="profil pic later" style={{height: '60px', width: '60px'}}/>    
 
-            <form style={{marginLeft: '65px', marginTop: '-60px'}}>
-                <textarea placeholder="Share your news" style={{resize: 'none', height: '100px', width: '60%'}}/>
-                <Button  shape="round" type="primary" style={{marginBottom: '30px'}}> Post </Button>   
+            <form style={{marginLeft: '65px', marginTop: '-60px'}} onSubmit={handleSubmit}>
+                <textarea value={post} placeholder="Share your news" style={{resize: 'none', height: '100px', width: '60%'}}
+                    onChange={(e) => setPost(e.target.value)}/>
+                <Button shape="round" type="submit" variant="primary" style={{marginBottom: '30px'}}> Post </Button>   
            </form>
         </div>
     );
 };
 
-export default PostForm;
+const mapActionsToProps = { addPost };
 
-/*<>
-            <div className="d-flex justify-content-center" style={{marginTop: '2%', border: '2px solid'}}>
-                <form style={{width: '50%', border: '2px solid', marginTop: '-20px'}}>
-                    <img src={image} alt="profil pic later" style={{marginTop: '-70px', border: '2px solid', height: '60px', width: '60px'}}/>
-                    <textarea placeholder="Share your news" style={{marginTop: '15px', border: '2px solid', resize: 'none', height: '80%', width: '80%'}}/>
-                    <Button style={{border: '3px solid red', marginTop: '40px', marginRight: '30px'}} variant="primary">Post</Button> 
-                </form>
-            </div>
-        </>*/
+export default connect(null, mapActionsToProps)(PostForm);

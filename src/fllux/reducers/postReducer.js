@@ -14,7 +14,7 @@ export default function(state = initialState, action) {
         case ADD_POST:
             return {
                 ...state,
-                posts: [...state.posts, action.payload]
+                posts: [action.payload, ...state.posts]
             };
         case DELETE_POST:
             return {
@@ -25,7 +25,8 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 posts: state.posts.map((post) => {
-                    if (post._id === action.payload.id) post.comments.push(action.payload.comment)
+                    if (post._id === action.payload.id) post.comments.push(action.payload.comment);
+                    return post;
                 })
             };
     
